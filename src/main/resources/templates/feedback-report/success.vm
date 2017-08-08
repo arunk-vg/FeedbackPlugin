@@ -1,0 +1,56 @@
+<style>
+.aui td {
+	text-align: center;
+},
+tbody div{
+    overflow:scroll;
+    height:100px;
+}
+</style>
+
+<html>
+<head>
+	<title>$action.getText("feedback-report.name")</title>	
+	$webResourceManager.requireResource("com.atlassian.auiplugin:aui-date-picker")
+	$webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-dropdown2")	
+	$webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-buttons")	
+	$webResourceManager.requireResource("net.valueglobal.jira.plugins.feedbackques:Feedback-Report-resources")
+	##$webResourceManager.requireResourcesForContext("FeedbackReport")		
+	<meta name="admin.active.section" content="top_system_section/builds_section"/>	
+	<meta name="admin.active.tab" content="feeback-report-item-link"/>	
+
+    <meta name="projectKey" content="$textutils.htmlEncode($action.projectKey)"/>
+
+</head>
+<body>
+	<header class="aui-page-header">
+        <div   class="aui-page-header-inner">
+            <div style="height: 50px" class="aui-page-header-main">
+                <h2>Feedback Report</h2>
+            </div>           
+        </div>
+    </header>
+  
+    
+<div  style="height: 50px" class="aui-quicksearch" >
+		<label for="search">Search :</label>
+		<input type="text" name="Search"  placeholder="Search" title="Search" id="quicksearchid">
+       ## <input type="button"  value="Search" onclick = "doSearch(document.getElementById('quicksearchid').value)">
+        From: <input type="text" id="txtFromDate" />
+		To: <input type="text" id="txtToDate" />
+		<a onclick = "doSearch()">
+          <span class="aui-icon aui-icon-small aui-iconfont-search"></span> </a>
+		<a onclick="clearSearch()">
+          <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span> </a>
+		
+    	##<input type = "button" class="aui-button" id = "dataexport" Name = "Export" value = "EXPORT" style="float:right">
+       <a id = "dataexport" href= "test" style="float:right"><input type = "button" class="aui-button"Name = "Export" value = "EXPORT"></a>
+</div>
+
+<div  class = "reportDiv">
+    <table id="feedbackreport-table" data-project-key="$textutils.htmlEncode($action.projectKey)" class="aui">
+    </table>
+ </div>
+
+</body>
+</html>

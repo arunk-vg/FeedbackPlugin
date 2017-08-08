@@ -1,0 +1,16 @@
+<h1> Template Feedback Questions </h1>
+<html>
+<head>
+	<title>$action.getText("feedback.name")</title>	
+	$webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-dropdown2")	
+	$webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-buttons")	
+	$webResourceManager.requireResourcesForContext("feedbackques")	
+	<meta name="admin.active.section" content="top_system_section/builds_section"/>	
+	<meta name="admin.active.tab" content="net.valueglobal.jira.plugins.feedback"/>	
+</head>
+<body>
+ ## <input type = "button" class="aui-button" id = "apiButton" Name = "API Call" value = "API" style="float:right">
+
+    <table id="project-feedbackques-table" class="aui"></table>
+</body>
+</html>

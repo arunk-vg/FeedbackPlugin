@@ -1,0 +1,129 @@
+#disable_html_escaping()
+#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+$webResourceManager.requireResource("net.valueglobal.jira.plugins.feedbackques:feedbackquestest-resources")
+
+<style>
+
+table {
+	width: 100%;
+	margin: 0;
+	background: #FFFFFF;
+	border: 1px solid #333333;
+	border-collapse: collapse;
+}
+
+
+td, th {
+	border: 1px solid #333333;
+	padding: 6px 16px;
+	text-align: center;
+	content-align:center;
+}
+
+th {
+	background: #EEEEEE;
+}
+
+
+caption {
+	background: #E0E0E0;
+	margin: 0;
+	border: 1px solid #333333;
+	border-bottom: none;
+	padding: 6px 16px;
+	font-weight: bold;
+	text-align:center;
+}
+
+</style>
+
+
+
+<table class = "t2">
+<caption>FEEDBACK QUESTIONS FOR THE TICKET</caption>
+
+
+		
+<thead>
+	   	<tr> 
+		   	<th>JOB PROFICIENCY- Task</th>
+		   	<th>Rating <br/> (Index: Poor = 0; Average = 1; Good = 2)</th>	 
+		</tr>   
+</thead>
+<body>
+
+	#foreach ($question in $questions)		
+		#if($question.projectKey == $issue.getProjectObject().getKey())
+			<tr>
+				#set($valuek = 1)
+											
+					<td>
+						<input name ="questions" id = "quest" type = "text"  value = "$!question.question" size="30" style="border: none" autofocus = "false" readonly/>
+						##<label>$!question.question</label>
+					</td>					
+					<td>
+					 	<select required = "required" id="rate" name="rating" onchange="myFunction()">
+		            		
+		            		<option value=""></option>
+		            	
+		            	#set ($values = [0..2])
+		        		#foreach ($value in $values)
+		        			#set ($optValue = $value) 
+		                			<option value="$optValue">$optValue</option>
+		        		#end
+		              	</select>	
+		              	<tr>	
+								<input type="hidden" name="weightage" value="$question.weightage"> 
+						</tr>		              	
+		             </td>					 			
+			</tr>				
+		#end
+		#end
+	#foreach($que in $ques)
+		#if($que.projectKey == "ADMIN" && $valuek != 1 )
+			<tr>		
+					<td>
+						<input name ="questions" id = "quest" type = "text"  value="$!que.question"  size="30" style="border: none" autofocus = "false" readonly/>
+						##<label>$!que.question</label>
+					</td>
+					<td>
+					 	<select required = "required" id="rate" name="rating" onchange="myFunction()">
+		            	<option value=""></option>
+		            	
+		            	#set ($values = [0..2])
+		        		#foreach ($value in $values)
+		        			#set ($optValue = $value) 
+		          	   			<option value="$optValue">$optValue</option>
+		        		#end
+		              	</select>       
+			            <tr>	
+								<input type="hidden" name="weightage" value="$que.weightage" readonly> 
+						</tr>	      	
+		           	</td>							
+			</tr>		
+					
+		#end
+	#end
+		
+	#set ($assign = $!issue.getAssignee().getDisplayName()) 
+	#set($unassigned = "UnAssigned")
+	#if("$!assign" == "")
+		#set($assign = $unassigned)	
+	#end					
+		<tr><td>OverAll Rating</td> <td colspan="2" id = "overrate">overallRate
+		##<input type = "text" value="" id = "overallRating">
+		</td>
+		</tr>
+		<tr><td>Comment</td><td><input type = "text" value = "" id = "feedbackcomment" name = "feedbackcomment" required = "required"></td></tr>
+		<tr>
+			##<input type="text" id = "ownerName" name="owner" value="$issue.getCustomfieldValue(fieldManager.getCustomFieldByName("Owner"));">		
+		    ##<input type="hidden" id = "assigneeName" name="assignee" value="$!assign">	
+			##<td colspan="2"> <input type="button" name="Save" id ="button" value="Save" onclick="myPostFunction(this)"></input> </td>
+		</tr>
+	
+	
+</body>
+
+</table> 	
+	
+#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="feedbackques"/>
+  <ao key="feedback-ao">
+    <description>The AO interface for storing Address objects.</description>
+    <entity>net.valueglobal.jira.plugins.feedback.ao.ProjectMapping</entity>
+    <entity>net.valueglobal.jira.plugins.FeedbackReport.entity.FeedbackEntity</entity>    
+<!--     <entity>net.valueglobal.jira.plugins.FeedbackReport.entity.FeedbackReport</entity>    
+ -->  </ao>
+  <rest key="Feedack-Question" version="1" path="/feedbackquestions">
+    <description>KB REST resources</description>
+    <package>net.valueglobal.jira.plugins.feedback.rest.v1</package>
+  </rest>
+     <rest name="Feedback Report Resource" i18n-name-key="feedback-report-resource.name" key="feedback-report-resource" path="/feedbackreportresource" version="1.0">
+    <description key="feedback-report-resource.description">The Feedback Report Resource Plugin</description>
+	<package>net.valueglobal.jira.plugins.FeedbackReport.rest</package>  
+  </rest> 
+   <!-- Active object  -->
+  <!-- <ao key="feedbackreport-ao">
+    <description>The AO interface for storing Feedback Report objects.</description>
+  </ao> -->
+  
+  <component key="feedbackreportservice" class="net.valueglobal.jira.plugins.FeedbackReport.service.DefaultFeedbackReportService">
+    <interface>net.valueglobal.jira.plugins.FeedbackReport.service.FeedbackReportService</interface>
+  </component>
+  <component key="feedbackreportDao" class="net.valueglobal.jira.plugins.FeedbackReport.dao.DefaultFeedbackReportDao">
+    <interface>net.valueglobal.jira.plugins.FeedbackReport.dao.FeedbackReportDao</interface>
+  </component>
+  <component key="feedbackservice" class="net.valueglobal.jira.plugins.feedback.services.Defaultfeedbackservice">
+    <interface>net.valueglobal.jira.plugins.feedback.services.feedbackservice</interface>
+  </component>
+  <!-- 	<component key="DefaultfeedbackDao" class="net.valueglobal.jira.plugins.feedback.dao.impl.DefaultfeedbackDao">
+  		<interface>net.valueglobal.jira.plugins.feedback.dao.feedbackDao</interface>
+	</component> -->
+  <component key="ProjectDefaultfeedbackDao" class="net.valueglobal.jira.plugins.feedback.dao.impl.DefaultProjectDao">
+    <interface>net.valueglobal.jira.plugins.feedback.dao.ProjectDao</interface>
+  </component>
+  <component-import key="applicationLinkService" interface="com.atlassian.applinks.api.ApplicationLinkService"/>
+  <component-import key="applicationProperties" interface="com.atlassian.jira.config.properties.ApplicationProperties"/>
+  <component-import key="entityLinkService" interface="com.atlassian.applinks.api.EntityLinkService"/>
+  <component-import key="renderer" interface="com.atlassian.templaterenderer.TemplateRenderer"/>
+  <component-import key="ao" name="Active Objects components" interface="com.atlassian.activeobjects.external.ActiveObjects">
+ 
+    <description>Access to the Active Objects service</description>
+  </component-import>
+  <!-- add our web resources -->
+  <web-resource key="feedbackques-resources" name="feedbackques Web Resources" state="enabled">
+    <context>feedbackques</context>
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>com.atlassian.auiplugin:aui-experimental-restfultable</dependency>
+     <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+    <resource type="download" name="feedbackques.css" location="/css/feedbackques.css"/>
+    <resource type="download" name="feedbackques.js" location="/js/feedbackques.js"/>
+    <resource type="download" name="images/" location="/images"/>
+  </web-resource>
+  <web-resource key="project-feedbackques-resources" name="Project feedbackques Web Resources" state="enabled">
+    <context>projectfeedbackques</context>
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>com.atlassian.auiplugin:aui-experimental-restfultable</dependency>
+    <resource type="download" name="projectfeedbackques.css" location="/css/projectfeedbackques.css"/>
+    <resource type="download" name="projectfeedbackques.js" location="/js/projectfeedbackques.js"/>
+    <resource type="download" name="images/" location="/images"/>
+  </web-resource>
+  <web-resource key="feedbackquestest-resources" name="feedbackques Web Resources" state="enabled">
+    <resource type="download" name="feedback.js" location="/js/feedback.js"/>
+    <context>jira.general</context>
+  </web-resource>
+  
+  <web-section name="Feedback Question" i18n-name-key="feedback.name" key="FEEDBACK" location="top_system_section" weight="5">
+    <description>The FEEDBACKPlugin</description>
+    <label key="feedback.label"/>
+  </web-section>
+  <web-item name="Feedback Questions" key="feedback-questions" section="top_system_section/FEEDBACK" weight="10">
+    <description key="feedback-questions.description">The Feedback Questions Plugin</description>
+    <label key="feedback-questions.label"/>
+    <link linkId="net.valueglobal.jira.plugins.feedback">/secure/admin/TemplateFeedbackQuestion.jspa</link>
+  </web-item>
+  <!--  WEB WORK FOR ADMIN RELATED FEEDBACK QUESTION CONFIGURATION -->
+  <webwork1 key="FeedbackQuestion" name="FeedbackQuestion" i18n-name-key="feedback-question.name" class="java.lang.Object">
+    <description key="feedback-question.description">TheFeedbackQuestionPlugin</description>
+    <actions>
+      <action name="net.valueglobal.jira.plugins.feedback.webwork.TemplateFeedbackQuestion" alias="TemplateFeedbackQuestion">
+        <view name="success">/templates/TemplateFeedbackQuestion.vm</view>
+        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
+      </action>
+    </actions>
+  </webwork1>
+  <web-section name="Project Template Configure Section" key="projectfeedback" location="atl.jira.proj.config" weight="30">
+    <label key="project-feedback.label"/>
+  </web-section>
+  <web-item name="project feedback question" key="project_feedback_question" weight="10" section="atl.jira.proj.config/projectfeedback">
+    <label key="Project-Feedback.label"/>
+    <link linkId="project-feedback-configure">/secure/ProjectFeedbackQuestion.jspa?projectKey=$projectKeyEncoded</link>
+    <!-- <condition class="com.atlassian.jira.plugin.webfragment.conditions.CanAdministerProjectCondition" /> -->
+  </web-item>
+  <!-- WEB WORK FOR PROJECT RELATED FEEDBACK QUESTION CONFIGURATION -->
+  <webwork1 name="Projectfeedbackquestion" key="Projectfeedbackquestion" i18n-name-key="ProjectfeedbackQuestion">
+    <description key="feedbackquestion.description"/>
+    <actions>
+      <action name="net.valueglobal.jira.plugins.feedback.webwork.ProjectFeedbackQuestion" alias="ProjectFeedbackQuestion">
+        <view name="success">/templates/ProjectFeedbackQuestion.vm</view>
+        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
+        <view name="permissionviolation">/secure/views/permissionviolation.jsp</view>
+      </action>
+    </actions>
+  </webwork1>
+  <customfield-type name="Feedback Questions Custom Field" i18n-name-key="Feedback Question Custom Field" key="Feedback Questions CF" class="net.valueglobal.jira.plugins.feedback.feedbackquesCF.FeedbackquesCF">
+    <description key="Feedback Questions Custom Field">The Feedback Questions Custom Field Plugin</description>
+    <resource name="view" type="velocity" location="/templates/feedbackquesCF/view.vm"/>
+    <resource name="edit" type="velocity" location="/templates/feedbackquesCF/edit.vm"/>
+  </customfield-type>
+  
+   <web-resource key="Feedback-Report-resources" name="Feedback Report Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+<!--     <dependency>com.atlassian.auiplugin:aui-experimental-restfultable</dependency> -->
+    
+<!--     <dependency>jira.webresources:autocomplete</dependency>
+	<dependency>jira.webresources:jira-fields</dependency>	
+	<dependency>com.atlassian.jira.jira-project-config-plugin:project-config-global</dependency>
+	<dependency>com.atlassian.gadgets.embedded:gadget-standalone-resources</dependency>
+		<transformation extension="js">
+			<transformer key="jsI18n"/>
+		</transformation>
+		<transformation extension="soy">
+			<transformer key="jiraSoyTransformer"/>
+		</transformation>
+	<dependency>com.atlassian.jira.jira-soy-plugin:soy-deps</dependency> -->
+    <resource type="download" name="jquery-ui.css" location="/css/jquery-ui.css"/>
+ <!--   <resource type="download" name="FeedbackReport.css" location="/css/FeedbackReport.css"/> -->
+    <resource type="download" name="FeedbackReport.js" location="/js/FeedbackReport.js"/>    
+    <resource type="download" name="images/" location="/images"/>
+    <context>FeedbackReport</context>
+  </web-resource>
+  
+   <webwork1 key="feedback-report" name="Feedback Report" i18n-name-key="feedback-report.name" class="java.lang.Object">
+    <description key="feedback-report.description">The Feedback Report Plugin</description>
+    <actions>
+      <action name="net.valueglobal.jira.plugins.FeedbackReport.webwork.FeedbackReportAction" alias="FeedbackReportAction">
+        <view name="success">/templates/feedback-report/success.vm</view>
+        <view name="error">/templates/feedback-report/error.vm</view>
+        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
+      </action>
+    </actions>
+  </webwork1>  
+  <web-section name="FeedbackReport Section" i18n-name-key="feedback-report-section.name" key="feedback-report-section" location="top_system_section" weight="5">
+    <description key="feedback-report-section.description">The FeedbackReport Plugin</description>
+    <label key="feedback-report-section.label"/>
+  </web-section>
+  <web-item name="FeebackReport Item" i18n-name-key="feeback-report-item.name" key="feeback-report-item" section="top_system_section/feedback-report-section" weight="10">
+    <description key="feeback-report-item.description">The FeebackReport Item Plugin</description>
+    <label key="feeback-report-item.label"/>
+    <link linkId="feeback-report-item-link">/secure/admin/FeedbackReportAction.jspa</link>
+  </web-item>  
+  <webwork1 key="feedback-project-report" name="Feedback Project Report" i18n-name-key="feedback-project-report.name" class="java.lang.Object">
+    <description key="feedback-project-report.description">The Feedback Project Report Plugin</description>
+    <actions>
+      <action name="net.valueglobal.jira.plugins.FeedbackReport.webwork.FeedbackProjectReportAction" alias="FeedbackProjectReportAction">
+        <view name="success">/templates/feedback-project-report/success.vm</view>
+        <view name="error">/templates/feedback-project-report/error.vm</view>
+        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
+      </action>
+    </actions>
+  </webwork1>  
+  <web-section name="FeedbackReportProjectSection" i18n-name-key="feedback-report-project-section.name" key="feedback-report-project-section" location="atl.jira.proj.config" weight="5">
+    <description key="feedback-report-project-section.description">The Feedback Report Project Tab Plugin</description>
+    <label key="feedback-report-project-section.label"/>
+  </web-section>
+  <web-item name="FeebackReport Project Item" i18n-name-key="feeback-report-project-item.name" key="feeback-report-project-item" section="atl.jira.proj.config/projectfeedback" weight="10">
+    <description key="feeback-report-project-item.description">The FeedbackReport Project Item Plugin</description>
+    <label key="feeback-report-project-item.label"/>
+    <link linkId="feeback-report-project-item-link">/secure/admin/FeedbackProjectReportAction.jspa?projectKey=$projectKeyEncoded</link>
+  </web-item>
+</atlassian-plugin>
